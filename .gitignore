@@ -1,6 +1,9 @@
 node_modules/
 dist/
 *.sqlite
+*.sqlite-shm
+*.sqlite-wal
 *.db
+backend/data/
 .DS_Store
 .superpowers/
