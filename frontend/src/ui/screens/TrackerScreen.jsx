@@ -40,55 +40,57 @@ export default function TrackerScreen() {
   }
 
   return (
-    <div className="space-y-4">
+    <div>
       {stays.length === 0 ? (
         <EmptyState onAdd={openAdd} />
       ) : (
         <>
-          <SummaryTiles used={used} remaining={remaining} status={status} />
+          {/* The chart and its figures on the left; the stays that produce them
+              on the right, where they double as the chart's legend. */}
+          <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_23rem] xl:gap-6 xl:items-start">
+            <div className="space-y-4">
+              <SummaryTiles used={used} remaining={remaining} status={status} today={today} />
 
-          <div ref={chartWrapRef}>
-            <ComplianceGraph
-              stays={stays}
-              colors={colors}
-              highlightedId={highlightedId}
-              onHighlight={setHighlightedId}
-            />
+              {/* Nothing else in this wrapper may render an <svg>: the PDF
+                  exporter serialises the first one it finds here. */}
+              <div ref={chartWrapRef}>
+                <ComplianceGraph
+                  stays={stays}
+                  colors={colors}
+                  highlightedId={highlightedId}
+                  onHighlight={setHighlightedId}
+                />
+              </div>
+
+              <button onClick={() => setPdfOpen(true)} className="btn-quiet btn-lg w-full">
+                Preview PDF report
+              </button>
+            </div>
+
+            <div className="xl:sticky xl:top-8">
+              <StayList
+                stays={stays}
+                colors={colors}
+                highlightedId={highlightedId}
+                onHighlight={setHighlightedId}
+                onEdit={openEdit}
+                onDelete={remove}
+              />
+            </div>
           </div>
 
-          <section>
-            <h2 className="text-xs uppercase tracking-widest text-fog-700 mb-2 px-1">
-              Your stays
-            </h2>
-            <StayList
-              stays={stays}
-              colors={colors}
-              highlightedId={highlightedId}
-              onHighlight={setHighlightedId}
-              onEdit={openEdit}
-              onDelete={remove}
-            />
-          </section>
-
-          <button
-            onClick={() => setPdfOpen(true)}
-            className="w-full px-4 py-3 rounded-xl2 border border-ink-700 text-fog-300 text-sm"
+          <motion.button
+            onClick={openAdd}
+            className="fixed right-5 bottom-24 lg:right-8 lg:bottom-8 z-40 h-14 w-14 rounded-full
+                       bg-accent text-ink-950 text-2xl font-light shadow-pop grid place-items-center"
+            whileTap={{ scale: 0.92 }}
+            whileHover={{ scale: 1.04 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+            aria-label="Add stay"
           >
-            Preview PDF report
-          </button>
+            +
+          </motion.button>
         </>
-      )}
-
-      {stays.length > 0 && (
-        <motion.button
-          onClick={openAdd}
-          className="fixed right-5 bottom-24 z-40 h-14 w-14 rounded-full bg-accent text-ink-950
-                     text-2xl font-light shadow-lift grid place-items-center"
-          whileTap={{ scale: 0.92 }}
-          aria-label="Add stay"
-        >
-          +
-        </motion.button>
       )}
 
       <StayForm open={formOpen} stay={editing} onClose={() => setFormOpen(false)} />

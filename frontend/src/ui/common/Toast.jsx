@@ -12,8 +12,8 @@ export default function Toast({ message, actionLabel, onAction, onDismiss, durat
     <AnimatePresence>
       {message && (
         <motion.div
-          className="fixed left-1/2 -translate-x-1/2 bottom-24 z-[60] flex items-center gap-4
-                     bg-ink-800 border border-ink-600 rounded-full pl-5 pr-2 py-2 shadow-lift"
+          className="fixed left-1/2 -translate-x-1/2 bottom-24 lg:bottom-8 z-[60] flex items-center
+                     gap-4 bg-ink-800 border border-ink-600 rounded-full pl-5 pr-2 py-2 shadow-pop"
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 20, opacity: 0 }}

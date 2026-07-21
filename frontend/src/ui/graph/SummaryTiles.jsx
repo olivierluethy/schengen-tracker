@@ -1,42 +1,74 @@
 import { motion } from 'framer-motion'
-import { LIMIT_DAYS } from '../../engine/schengen.js'
+import { LIMIT_DAYS, WINDOW_DAYS } from '../../engine/schengen.js'
+import { addDays, formatDisplay } from '../../engine/dates.js'
 
 const STATUS = {
-  compliant: { label: 'Compliant', cls: 'text-ok', dot: 'bg-ok' },
-  warning: { label: 'Getting close', cls: 'text-warn', dot: 'bg-warn' },
-  over: { label: 'Over the limit', cls: 'text-over', dot: 'bg-over' },
+  compliant: { label: 'Compliant', text: 'text-ok', dot: 'bg-ok', ring: 'border-ok/30 bg-ok/10', bar: 'bg-ok' },
+  warning: { label: 'Getting close', text: 'text-warn', dot: 'bg-warn', ring: 'border-warn/30 bg-warn/10', bar: 'bg-warn' },
+  over: { label: 'Over the limit', text: 'text-over', dot: 'bg-over', ring: 'border-over/30 bg-over/10', bar: 'bg-over' },
 }
 
-export default function SummaryTiles({ used, remaining, status }) {
+export default function SummaryTiles({ used, remaining, status, today }) {
   const s = STATUS[status]
+  const pct = Math.min(100, Math.round((used / LIMIT_DAYS) * 100))
+  const windowStart = today ? addDays(today, -(WINDOW_DAYS - 1)) : null
+
   return (
-    <div className="grid grid-cols-3 gap-2">
-      <Tile label="Days used" value={used} suffix={`/ ${LIMIT_DAYS}`} />
-      <Tile label="Days left" value={remaining} />
-      <motion.div
-        key={status}
-        initial={{ opacity: 0, y: 4 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="card px-3 py-3 flex flex-col justify-between"
-      >
-        <span className="text-[10px] uppercase tracking-widest text-fog-700">Status</span>
-        <span className={`mt-1 inline-flex items-center gap-1.5 text-sm font-semibold ${s.cls}`}>
+    <section className="card p-4 sm:p-5">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h2 className="stamp">Days used</h2>
+          <div className="mt-2 flex items-baseline gap-1.5">
+            <motion.span
+              key={used}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+              className="num text-[2.75rem] font-semibold leading-none tracking-tight"
+            >
+              {used}
+            </motion.span>
+            <span className="num text-lg text-fog-700 leading-none">/ {LIMIT_DAYS}</span>
+          </div>
+        </div>
+
+        <motion.span
+          key={status}
+          initial={{ opacity: 0, scale: 0.96 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.2 }}
+          className={`pill ${s.ring} ${s.text}`}
+        >
           <span className={`h-1.5 w-1.5 rounded-full ${s.dot}`} />
           {s.label}
-        </span>
-      </motion.div>
-    </div>
-  )
-}
+        </motion.span>
+      </div>
 
-function Tile({ label, value, suffix }) {
-  return (
-    <div className="card px-3 py-3">
-      <span className="block text-[10px] uppercase tracking-widest text-fog-700">{label}</span>
-      <span className="mt-1 block num text-2xl font-semibold tracking-tight leading-none">
-        {value}
-        {suffix && <span className="text-sm text-fog-700 font-normal ml-1">{suffix}</span>}
-      </span>
-    </div>
+      {/* The allowance as a single bar: the fastest read on the page. */}
+      <div className="mt-4 h-1.5 rounded-full bg-ink-800 overflow-hidden">
+        <motion.div
+          className={`h-full rounded-full ${s.bar}`}
+          initial={{ width: 0 }}
+          animate={{ width: `${pct}%` }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        />
+      </div>
+
+      <div className="mt-4 grid grid-cols-2 gap-3">
+        <div className="well px-3.5 py-3">
+          <span className="stamp block">Days left</span>
+          <span className="mt-1.5 block num text-2xl font-semibold leading-none tracking-tight">
+            {remaining}
+          </span>
+        </div>
+        <div className="well px-3.5 py-3">
+          <span className="stamp block">Window opened</span>
+          <span className="mt-1.5 block num text-sm text-fog-300 leading-tight">
+            {windowStart ? formatDisplay(windowStart) : '—'}
+          </span>
+          <span className="mt-1 block text-[10px] text-fog-800">{WINDOW_DAYS} days back from today</span>
+        </div>
+      </div>
+    </section>
   )
 }

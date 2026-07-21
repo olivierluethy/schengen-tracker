@@ -16,9 +16,96 @@
   /* Respect the iOS home indicator and notch. */
   .safe-b { padding-bottom: env(safe-area-inset-bottom, 0px); }
   .safe-t { padding-top: env(safe-area-inset-top, 0px); }
+
+  /* One focus treatment everywhere, and it is always visible. */
+  :focus-visible {
+    @apply outline-none ring-2 ring-accent/70 ring-offset-2 ring-offset-ink-950 rounded-lg;
+  }
+
+  ::selection { @apply bg-accent/30 text-fog-100; }
+
+  /* Dark scrollbars — a bright default gutter breaks the whole surface. */
+  * {
+    scrollbar-color: #2E3644 transparent;
+    scrollbar-width: thin;
+  }
+  ::-webkit-scrollbar { height: 10px; width: 10px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: #232A36;
+    border: 3px solid transparent;
+    background-clip: content-box;
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover { background: #3B4557; background-clip: content-box; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 }
 
 @layer components {
-  .card { @apply bg-ink-900 border border-ink-700 rounded-xl2 shadow-lift; }
-  .num  { font-variant-numeric: tabular-nums; }
+  /* ── Surfaces ──────────────────────────────────────────────────────── */
+  .card {
+    @apply bg-ink-900 border border-ink-700 rounded-xl2 shadow-lift;
+  }
+  /* A well sunk into a card: inputs, tiles, read-only values. */
+  .well {
+    @apply bg-ink-850 border border-ink-700 rounded-xl2;
+  }
+
+  /* ── Type roles ────────────────────────────────────────────────────── */
+  .num { font-variant-numeric: tabular-nums; @apply font-mono; }
+  .heading { @apply font-display tracking-tight text-fog-100; }
+  /* The structural device: a stamped field label, as on a printed form. */
+  .stamp {
+    @apply font-mono text-stamp uppercase text-fog-700;
+  }
+  .stamp-rule {
+    @apply flex items-center gap-2.5 before:h-px before:w-3 before:bg-ink-600 before:content-[''];
+  }
+
+  /* ── Controls ──────────────────────────────────────────────────────── */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm
+           font-medium transition-colors duration-150 disabled:opacity-40
+           disabled:pointer-events-none;
+  }
+  .btn-primary { @apply btn bg-accent text-ink-950 font-semibold hover:bg-accent-soft; }
+  .btn-quiet   { @apply btn bg-ink-800 text-fog-300 hover:bg-ink-700 hover:text-fog-100; }
+  .btn-ghost   { @apply btn text-fog-500 hover:bg-ink-850 hover:text-fog-100; }
+  .btn-danger  { @apply btn bg-over/15 text-over hover:bg-over/25; }
+  .btn-lg      { @apply px-5 py-3 text-[0.9375rem]; }
+
+  .field {
+    @apply w-full bg-ink-850 border border-ink-700 rounded-xl px-4 py-3 text-fog-100
+           placeholder:text-fog-800 outline-none transition-colors
+           focus:border-accent focus:bg-ink-800;
+  }
+  .select {
+    @apply bg-ink-850 border border-ink-700 rounded-lg px-2.5 py-2 text-xs text-fog-300
+           outline-none focus:border-accent;
+  }
+
+  .pill {
+    @apply inline-flex items-center gap-2 rounded-full border px-2.5 py-1
+           font-mono text-stamp uppercase;
+  }
+
+  /* Hairline that reads as a ruled line on a document rather than a border. */
+  .rule { @apply h-px w-full bg-gradient-to-r from-ink-700 via-ink-700 to-transparent; }
+}
+
+@layer utilities {
+  /* Fade the edges of a horizontally scrolling strip instead of hard-cutting. */
+  .fade-x {
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 16px, #000 calc(100% - 16px), transparent);
+    mask-image: linear-gradient(to right, transparent, #000 16px, #000 calc(100% - 16px), transparent);
+  }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 }

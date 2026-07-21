@@ -58,39 +58,36 @@ export default function StayForm({ open, stay, onClose }) {
       <Modal open={open} onClose={onClose} title={stay ? 'Edit stay' : 'Add stay'}>
         <div className="space-y-4">
           <div>
-            <label htmlFor="stay-name" className="block text-xs text-fog-500 mb-1.5">Name</label>
+            <label htmlFor="stay-name" className="stamp block mb-2">Name</label>
             <input
               id="stay-name"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Barcelona"
-              className="w-full bg-ink-850 border border-ink-700 rounded-xl2 px-4 py-3
-                         text-fog-100 placeholder:text-fog-700 focus:border-accent outline-none"
+              className="field"
             />
             {errors.name && <p className="mt-1.5 text-xs text-over">{errors.name}</p>}
           </div>
 
           <div>
-            <label htmlFor="stay-country" className="block text-xs text-fog-500 mb-1.5">
-              Country <span className="text-fog-700">(optional)</span>
+            <label htmlFor="stay-country" className="stamp block mb-2">
+              Country <span className="text-fog-800">— optional</span>
             </label>
             <input
               id="stay-country"
               value={country}
               onChange={(e) => setCountry(e.target.value)}
               placeholder="Spain"
-              className="w-full bg-ink-850 border border-ink-700 rounded-xl2 px-4 py-3
-                         text-fog-100 placeholder:text-fog-700 focus:border-accent outline-none"
+              className="field"
             />
           </div>
 
           <div>
-            <span className="block text-xs text-fog-500 mb-1.5">Dates</span>
+            <span className="stamp block mb-2">Dates</span>
             <button
               type="button"
               onClick={() => setSheetOpen(true)}
-              className="w-full bg-ink-850 border border-ink-700 rounded-xl2 px-4 py-3 text-left
-                         flex items-center justify-between focus:border-accent outline-none"
+              className="field text-left flex items-center justify-between hover:border-ink-600"
             >
               <span className="num text-fog-100" data-testid="start-date-value">
                 {formatDisplay(startDate)}
@@ -103,17 +100,17 @@ export default function StayForm({ open, stay, onClose }) {
             {(errors.startDate || errors.endDate) && (
               <p className="mt-1.5 text-xs text-over">{errors.startDate || errors.endDate}</p>
             )}
-            <p className="mt-1.5 text-xs text-fog-700 num" data-testid="duration">
+            <p className="mt-2 text-xs text-fog-700" data-testid="duration">
               {duration ? `${duration} days — entry and exit days both count` : ' '}
             </p>
           </div>
 
           <div className="flex gap-2 pt-1">
-            <button type="button" onClick={onClose}
-              className="flex-1 px-4 py-3 rounded-xl2 bg-ink-800 text-fog-300">Cancel</button>
+            <button type="button" onClick={onClose} className="btn-quiet btn-lg flex-1">
+              Cancel
+            </button>
             <button type="button" onClick={save} disabled={saving}
-              className="flex-1 px-4 py-3 rounded-xl2 bg-accent text-ink-950 font-semibold
-                         disabled:opacity-50 active:scale-[0.98] transition">
+              className="btn-primary btn-lg flex-1 active:scale-[0.98]">
               {saving ? 'Saving…' : 'Save'}
             </button>
           </div>

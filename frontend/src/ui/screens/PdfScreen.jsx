@@ -46,15 +46,16 @@ export default function PdfScreen({ stays, chartSvg, onClose }) {
       exit={{ opacity: 0, y: 16 }}
       transition={{ duration: 0.22 }}
     >
-      <header className="safe-t px-4 h-14 flex items-center justify-between border-b border-ink-800">
-        <button onClick={onClose} className="text-fog-300 px-2 py-1">Close</button>
-        <span className="text-sm font-semibold">PDF report</span>
-        <span className="w-14" />
+      <header className="safe-t px-4 sm:px-6 h-14 flex items-center justify-between
+                         border-b border-ink-800">
+        <button onClick={onClose} className="btn-ghost !px-2 !py-1 text-sm">Close</button>
+        <span className="heading text-base">PDF report</span>
+        <span className="w-16" />
       </header>
 
       {error && <p className="px-4 py-2 text-xs text-warn">{error}</p>}
 
-      <div className="flex-1 min-h-0 p-3">
+      <div className="flex-1 min-h-0 p-3 sm:p-6 mx-auto w-full max-w-4xl">
         <BlobProvider document={doc}>
           {({ url, loading, error: blobError }) => {
             if (loading) return <div className="h-full rounded-xl2 bg-ink-900 animate-pulse" />
@@ -76,12 +77,11 @@ export default function PdfScreen({ stays, chartSvg, onClose }) {
         </BlobProvider>
       </div>
 
-      <div className="p-4 safe-b border-t border-ink-800 flex gap-2">
+      <div className="p-4 safe-b border-t border-ink-800 flex gap-2 mx-auto w-full max-w-4xl">
         <BlobProvider document={doc}>
           {({ url }) =>
             url ? (
-              <a href={url} target="_blank" rel="noreferrer"
-                className="flex-1 text-center px-4 py-3 rounded-xl2 bg-ink-800 text-fog-200">
+              <a href={url} target="_blank" rel="noreferrer" className="btn-quiet btn-lg flex-1">
                 Open
               </a>
             ) : <span className="flex-1" />
@@ -90,7 +90,7 @@ export default function PdfScreen({ stays, chartSvg, onClose }) {
         <PDFDownloadLink
           document={doc}
           fileName={`schengen-${today}.pdf`}
-          className="flex-1 text-center px-4 py-3 rounded-xl2 bg-accent text-ink-950 font-semibold"
+          className="btn-primary btn-lg flex-1"
         >
           {({ loading }) => (loading ? 'Preparing…' : 'Download')}
         </PDFDownloadLink>

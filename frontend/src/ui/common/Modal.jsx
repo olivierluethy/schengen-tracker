@@ -1,13 +1,18 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect } from 'react'
 
+const SIZES = {
+  md: 'sm:max-w-md',
+  lg: 'sm:max-w-xl',
+}
+
 /**
  * A bottom sheet on phones, a centred dialog from 640px up. Motion is
  * purposeful: the sheet rises from where the thumb is, so the eye follows it.
  */
-export default function Modal({ open, onClose, title, children }) {
+export default function Modal({ open, onClose, title, size = 'md', children }) {
   useEffect(() => {
-    if (!open) return
+    if (!open) return undefined
     const onKey = (e) => e.key === 'Escape' && onClose()
     document.addEventListener('keydown', onKey)
     document.body.style.overflow = 'hidden'
@@ -33,8 +38,8 @@ export default function Modal({ open, onClose, title, children }) {
             role="dialog"
             aria-modal="true"
             aria-label={title}
-            className="relative w-full sm:max-w-md bg-ink-900 border-t sm:border border-ink-700
-                       sm:rounded-xl2 rounded-t-3xl shadow-lift max-h-[92vh] overflow-y-auto safe-b"
+            className={`relative w-full ${SIZES[size]} bg-ink-900 border-t sm:border border-ink-700
+                       sm:rounded-xl2 rounded-t-3xl shadow-pop max-h-[92vh] overflow-y-auto safe-b`}
             initial={{ y: 40, opacity: 0, scale: 0.98 }}
             animate={{ y: 0, opacity: 1, scale: 1 }}
             exit={{ y: 30, opacity: 0, scale: 0.98 }}
@@ -44,8 +49,17 @@ export default function Modal({ open, onClose, title, children }) {
               <div className="h-1 w-10 rounded-full bg-ink-600" />
             </div>
             {title && (
-              <div className="px-5 pt-4 pb-2">
-                <h2 className="text-lg font-semibold tracking-tight">{title}</h2>
+              <div className="px-5 pt-4 pb-3 flex items-start justify-between gap-4">
+                <h2 className="heading text-lg leading-tight">{title}</h2>
+                <button
+                  type="button"
+                  onClick={onClose}
+                  aria-label="Close"
+                  className="hidden sm:grid h-7 w-7 place-items-center rounded-lg text-fog-700
+                             hover:text-fog-100 hover:bg-ink-800 transition-colors shrink-0"
+                >
+                  ✕
+                </button>
               </div>
             )}
             <div className="px-5 pb-5">{children}</div>

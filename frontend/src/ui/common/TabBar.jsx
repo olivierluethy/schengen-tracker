@@ -1,20 +1,17 @@
 import { motion } from 'framer-motion'
+import { TABS } from './navItems.js'
 
-const TABS = [
-  { id: 'tracker', label: 'Tracker', icon: '📈' },
-  { id: 'partners', label: 'Partners', icon: '👥' },
-  { id: 'settings', label: 'Settings', icon: '⚙️' },
-]
-
+/** Phone navigation. Desktop uses SideNav; this is hidden from lg up. */
 export default function TabBar({ active, onChange }) {
   return (
-    <nav className="fixed bottom-0 inset-x-0 z-40 border-t border-ink-700 bg-ink-950/90 backdrop-blur safe-b">
+    <nav className="lg:hidden fixed bottom-0 inset-x-0 z-40 border-t border-ink-800
+                    bg-ink-950/90 backdrop-blur safe-b">
       <div className="max-w-2xl mx-auto grid grid-cols-3">
         {TABS.map((t) => (
           <button
             key={t.id}
             onClick={() => onChange(t.id)}
-            aria-current={active === t.id}
+            aria-current={active === t.id ? 'page' : undefined}
             className="relative py-3 flex flex-col items-center gap-1 text-[11px] tracking-wide"
           >
             {active === t.id && (
