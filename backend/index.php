@@ -36,7 +36,7 @@ $routes = [
     'POST /api/auth/login'    => fn() => handleLogin($pdo),
     'POST /api/auth/logout'   => fn() => handleLogout($pdo),
     'GET /api/auth/me'        => fn() => handleMe($pdo),
-    // Task 12: 'POST /api/sync' => fn() => handleSync($pdo),
+    'POST /api/sync'          => fn() => handleSync($pdo),
     // Task 14: partner routes
 ];
 
