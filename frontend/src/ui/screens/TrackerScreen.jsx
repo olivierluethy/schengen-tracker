@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { motion } from 'framer-motion'
 import { listStays, softDeleteStay, restoreStay } from '../../db/stays.js'
@@ -11,6 +11,7 @@ import { buildPresence, usageOn, remainingOn, statusOf } from '../../engine/sche
 import { todayISO } from '../../engine/dates.js'
 import SummaryTiles from '../graph/SummaryTiles.jsx'
 import ComplianceGraph from '../graph/ComplianceGraph.jsx'
+import PdfScreen from './PdfScreen.jsx'
 
 export default function TrackerScreen() {
   const stays = useLiveQuery(() => listStays(), [], null)
@@ -18,6 +19,8 @@ export default function TrackerScreen() {
   const [editing, setEditing] = useState(null)
   const [highlightedId, setHighlightedId] = useState(null)
   const [undo, setUndo] = useState(null)
+  const chartWrapRef = useRef(null)
+  const [pdfOpen, setPdfOpen] = useState(false)
 
   if (stays === null) return <div className="h-40 rounded-xl2 bg-ink-900 animate-pulse" />
 
@@ -44,12 +47,14 @@ export default function TrackerScreen() {
         <>
           <SummaryTiles used={used} remaining={remaining} status={status} />
 
-          <ComplianceGraph
-            stays={stays}
-            colors={colors}
-            highlightedId={highlightedId}
-            onHighlight={setHighlightedId}
-          />
+          <div ref={chartWrapRef}>
+            <ComplianceGraph
+              stays={stays}
+              colors={colors}
+              highlightedId={highlightedId}
+              onHighlight={setHighlightedId}
+            />
+          </div>
 
           <section>
             <h2 className="text-xs uppercase tracking-widest text-fog-700 mb-2 px-1">
@@ -64,6 +69,13 @@ export default function TrackerScreen() {
               onDelete={remove}
             />
           </section>
+
+          <button
+            onClick={() => setPdfOpen(true)}
+            className="w-full px-4 py-3 rounded-xl2 border border-ink-700 text-fog-300 text-sm"
+          >
+            Preview PDF report
+          </button>
         </>
       )}
 
@@ -87,6 +99,14 @@ export default function TrackerScreen() {
         onAction={async () => { await restoreStay(undo.id); setUndo(null) }}
         onDismiss={() => setUndo(null)}
       />
+
+      {pdfOpen && (
+        <PdfScreen
+          stays={stays}
+          chartSvg={chartWrapRef.current?.querySelector('svg') || null}
+          onClose={() => setPdfOpen(false)}
+        />
+      )}
     </div>
   )
 }

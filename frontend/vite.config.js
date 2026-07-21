@@ -19,7 +19,12 @@ export default defineConfig({
       registerType: 'autoUpdate',
       injectRegister: 'inline',
       // The whole app is one HTML file; precache it and the icons.
-      workbox: { globPatterns: ['**/*.{html,png,svg,ico}'] },
+      // @react-pdf/renderer pushes the single-file bundle past workbox's
+      // default 2 MiB precache limit, so it is raised here.
+      workbox: {
+        globPatterns: ['**/*.{html,png,svg,ico}'],
+        maximumFileSizeToCacheInBytes: 6 * 1024 * 1024,
+      },
       manifest: {
         name: 'Schengen Tracker',
         short_name: 'Schengen',
