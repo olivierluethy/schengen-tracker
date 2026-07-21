@@ -5,7 +5,7 @@ import SyncPill from './ui/common/SyncPill.jsx'
 import TrackerScreen from './ui/screens/TrackerScreen.jsx'
 import PartnersScreen from './ui/screens/PartnersScreen.jsx'
 import SettingsScreen from './ui/screens/SettingsScreen.jsx'
-import { useOnline } from './sync/useOnline.js'
+import { useSync } from './sync/useSync.js'
 
 const SCREENS = {
   tracker: TrackerScreen,
@@ -15,7 +15,7 @@ const SCREENS = {
 
 export default function App() {
   const [tab, setTab] = useState('tracker')
-  const online = useOnline()
+  const { state, count } = useSync()
   const Screen = SCREENS[tab]
 
   return (
@@ -26,7 +26,7 @@ export default function App() {
             <h1 className="text-base font-semibold tracking-tight leading-none">Schengen</h1>
             <p className="text-[11px] text-fog-700 leading-none mt-1">90 days in any 180</p>
           </div>
-          <SyncPill state={online ? 'local' : 'offline'} />
+          <SyncPill state={state} count={count} />
         </div>
       </header>
 
