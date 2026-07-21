@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    color-scheme: dark;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-ink-950 text-fog-100 font-sans antialiased;
+    /* Tabular figures: day counts must not jitter as they change. */
+    font-feature-settings: 'tnum' 1, 'cv05' 1;
+    overscroll-behavior-y: none;
+  }
+  /* Respect the iOS home indicator and notch. */
+  .safe-b { padding-bottom: env(safe-area-inset-bottom, 0px); }
+  .safe-t { padding-top: env(safe-area-inset-top, 0px); }
+}
+
+@layer components {
+  .card { @apply bg-ink-900 border border-ink-700 rounded-xl2 shadow-lift; }
+  .num  { font-variant-numeric: tabular-nums; }
+}
