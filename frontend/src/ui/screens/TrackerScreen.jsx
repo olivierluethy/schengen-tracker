@@ -7,6 +7,10 @@ import EmptyState from '../common/EmptyState.jsx'
 import Toast from '../common/Toast.jsx'
 import StayList from '../stays/StayList.jsx'
 import StayForm from '../stays/StayForm.jsx'
+import { buildPresence, usageOn, remainingOn, statusOf } from '../../engine/schengen.js'
+import { todayISO } from '../../engine/dates.js'
+import SummaryTiles from '../graph/SummaryTiles.jsx'
+import ComplianceGraph from '../graph/ComplianceGraph.jsx'
 
 export default function TrackerScreen() {
   const stays = useLiveQuery(() => listStays(), [], null)
@@ -18,6 +22,11 @@ export default function TrackerScreen() {
   if (stays === null) return <div className="h-40 rounded-xl2 bg-ink-900 animate-pulse" />
 
   const colors = colorMap(stays)
+
+  const today = todayISO()
+  const used = usageOn(buildPresence(stays), today)
+  const remaining = remainingOn(used)
+  const status = statusOf(used)
 
   const openAdd = () => { setEditing(null); setFormOpen(true) }
   const openEdit = (stay) => { setEditing(stay); setFormOpen(true) }
@@ -33,7 +42,15 @@ export default function TrackerScreen() {
         <EmptyState onAdd={openAdd} />
       ) : (
         <>
-          {/* Graph slots in here in Task 9 — above the values, per the spec. */}
+          <SummaryTiles used={used} remaining={remaining} status={status} />
+
+          <ComplianceGraph
+            stays={stays}
+            colors={colors}
+            highlightedId={highlightedId}
+            onHighlight={setHighlightedId}
+          />
+
           <section>
             <h2 className="text-xs uppercase tracking-widest text-fog-700 mb-2 px-1">
               Your stays
