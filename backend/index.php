@@ -37,7 +37,11 @@ $routes = [
     'POST /api/auth/logout'   => fn() => handleLogout($pdo),
     'GET /api/auth/me'        => fn() => handleMe($pdo),
     'POST /api/sync'          => fn() => handleSync($pdo),
-    // Task 14: partner routes
+    'POST /api/partners/invite'  => fn() => handleInvite($pdo),
+    'POST /api/partners/respond' => fn() => handleRespond($pdo),
+    'POST /api/partners/revoke'  => fn() => handleRevoke($pdo),
+    'POST /api/partners/sharing' => fn() => handleSetSharing($pdo),
+    'GET /api/partners'          => fn() => handleListPartners($pdo),
 ];
 
 $key = "$method $path";
@@ -45,6 +49,8 @@ if (isset($routes[$key])) {
     $routes[$key]();
 }
 
-// Task 14: handlePartnerTracking preg_match block
+if (preg_match('#^/api/partners/([0-9a-f-]{36})/tracking$#i', $path, $m) && $method === 'GET') {
+    handlePartnerTracking($pdo, $m[1]);
+}
 
 fail('Not found', 404);
