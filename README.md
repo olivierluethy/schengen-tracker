@@ -1,5 +1,7 @@
 # Schengen Tracker
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 An offline-first tracker for the Schengen **90/180-day rule**. Add your stays, see
 exactly how much of your 90-day allowance is used in any rolling 180-day window, and
 export a PDF — all with no account and no internet connection.
@@ -205,3 +207,12 @@ Then the reconnection half:
     ```
 13. Go offline, edit a stay, go online → the pill returns to "Synced" without any
     action from you, and the edit is on the server.
+
+## License
+
+Released under the [MIT License](LICENSE) © 2026 Olivier Lüthy. You're free to use, modify and distribute this
+software, including commercially, as long as the copyright notice and license are included.
+
+## Author
+
+Built by **Olivier Lüthy** — [GitHub](https://github.com/olivierluethy).
